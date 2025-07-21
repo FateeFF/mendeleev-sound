@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Таблица Менделеева</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+  <button class="theme-toggle" onclick="toggleTheme()">🌞 / 🌙</button>
+  <h1>Таблица Менделеева</h1>
+
+  <div class="table-container">
+    <table id="periodic-table"></table>
+  </div>
+
+  <div id="tooltip" class="tooltip"></div>
+
+  <script>
+    const elements = [
+      {number:1, symbol:"H", name:"Водород", mass:1.008, group:"nonmetal"},
+      {number:2, symbol:"He", name:"Гелий", mass:4.0026, group:"noble-gas"},
+      {number:3, symbol:"Li", name:"Литий", mass:6.94, group:"alkali"},
+      {number:4, symbol:"Be", name:"Бериллий", mass:9.0122, group:"alkaline"},
+      {number:5, symbol:"B", name:"Бор", mass:10.81, group:"metalloid"},
+      {number:6, symbol:"C", name:"Углерод", mass:12.011, group:"nonmetal"},
+      {number:7, symbol:"N", name:"Азот", mass:14.007, group:"nonmetal"},
+      {number:8, symbol:"O", name:"Кислород", mass:15.999, group:"nonmetal"},
+      {number:9, symbol:"F", name:"Фтор", mass:18.998, group:"nonmetal"},
+      {number:10, symbol:"Ne", name:"Неон", mass:20.180, group:"noble-gas"},
+      {number:11, symbol:"Na", name:"Натрий", mass:22.990, group:"alkali"},
+      {number:12, symbol:"Mg", name:"Магний", mass:24.305, group:"alkaline"},
+      {number:13, symbol:"Al", name:"Алюминий", mass:26.982, group:"post-transition"},
+      {number:14, symbol:"Si", name:"Кремний", mass:28.085, group:"metalloid"},
+      {number:15, symbol:"P", name:"Фосфор", mass:30.974, group:"nonmetal"},
+      {number:16, symbol:"S", name:"Сера", mass:32.06, group:"nonmetal"},
+      {number:17, symbol:"Cl", name:"Хлор", mass:35.45, group:"nonmetal"},
+      {number:18, symbol:"Ar", name:"Аргон", mass:39.948, group:"noble-gas"},
+      {number:19, symbol:"K", name:"Калий", mass:39.098, group:"alkali"},
+      {number:20, symbol:"Ca", name:"Кальций", mass:40.078, group:"alkaline"},
+      {number:21, symbol:"Sc", name:"Скандий", mass:44.956, group:"transition"},
+      {number:22, symbol:"Ti", name:"Титан", mass:47.867, group:"transition"},
+      {number:23, symbol:"V", name:"Ванадий", mass:50.942, group:"transition"},
+      {number:24, symbol:"Cr", name:"Хром", mass:51.996, group:"transition"},
+      {number:25, symbol:"Mn", name:"Марганец", mass:54.938, group:"transition"},
+      {number:26, symbol:"Fe", name:"Железо", mass:55.845, group:"transition"},
+      {number:27, symbol:"Co", name:"Кобальт", mass:58.933, group:"transition"},
+      {number:28, symbol:"Ni", name:"Никель", mass:58.693, group:"transition"},
+      {number:29, symbol:"Cu", name:"Медь", mass:63.546, group:"transition"},
+      {number:30, symbol:"Zn", name:"Цинк", mass:65.38, group:"transition"},
+      {number:31, symbol:"Ga", name:"Галлий", mass:69.723, group:"post-transition"},
+      {number:32, symbol:"Ge", name:"Германий", mass:72.630, group:"metalloid"},
+      {number:33, symbol:"As", name:"Мышьяк", mass:74.922, group:"metalloid"},
+      {number:34, symbol:"Se", name:"Селен", mass:78.971, group:"nonmetal"},
+      {number:35, symbol:"Br", name:"Бром", mass:79.904, group:"nonmetal"},
+      {number:36, symbol:"Kr", name:"Криптон", mass:83.798, group:"noble-gas"},
+      {number:37, symbol:"Rb", name:"Рубидий", mass:85.468, group:"alkali"},
+      {number:38, symbol:"Sr", name:"Стронций", mass:87.62, group:"alkaline"},
+      {number:39, symbol:"Y", name:"Иттрий", mass:88.906, group:"transition"},
+      {number:40, symbol:"Zr", name:"Цирконий", mass:91.224, group:"transition"},
+      {number:41, symbol:"Nb", name:"Ниобий", mass:92.906, group:"transition"},
+      {number:42, symbol:"Mo", name:"Молибден", mass:95.95, group:"transition"},
+      {number:43, symbol:"Tc", name:"Технеций", mass:98, group:"transition"},
+      {number:44, symbol:"Ru", name:"Рутений", mass:101.07, group:"transition"},
+      {number:45, symbol:"Rh", name:"Родий", mass:102.91, group:"transition"},
+      {number:46, symbol:"Pd", name:"Палладий", mass:106.42, group:"transition"},
+      {number:47, symbol:"Ag", name:"Серебро", mass:107.87, group:"transition"},
+      {number:48, symbol:"Cd", name:"Кадмий", mass:112.41, group:"transition"},
+      {number:49, symbol:"In", name:"Индий", mass:114.82, group:"post-transition"},
+      {number:50, symbol:"Sn", name:"Олово", mass:118.71, group:"post-transition"},
+      {number:51, symbol:"Sb", name:"Сурьма", mass:121.76, group:"metalloid"},
+      {number:52, symbol:"Te", name:"Теллур", mass:127.60, group:"metalloid"},
+      {number:53, symbol:"I", name:"Йод", mass:126.90, group:"nonmetal"},
+      {number:54, symbol:"Xe", name:"Ксенон", mass:131.29, group:"noble-gas"},
+      {number:55, symbol:"Cs", name:"Цезий", mass:132.91, group:"alkali"},
+      {number:56, symbol:"Ba", name:"Барий", mass:137.33, group:"alkaline"},
+      {number:57, symbol:"La", name:"Лантан", mass:138.91, group:"lanthanide"},
+      {number:58, symbol:"Ce", name:"Церий", mass:140.12, group:"lanthanide"},
+      {number:59, symbol:"Pr", name:"Празеодим", mass:140.91, group:"lanthanide"},
+      {number:60, symbol:"Nd", name:"Неодим", mass:144.24, group:"lanthanide"},
+      {number:61, symbol:"Pm", name:"Прометий", mass:145, group:"lanthanide"},
+      {number:62, symbol:"Sm", name:"Самарий", mass:150.36, group:"lanthanide"},
+      {number:63, symbol:"Eu", name:"Европий", mass:151.96, group:"lanthanide"},
+      {number:64, symbol:"Gd", name:"Гадолиний", mass:157.25, group:"lanthanide"},
+      {number:65, symbol:"Tb", name:"Тербий", mass:158.93, group:"lanthanide"},
+      {number:66, symbol:"Dy", name:"Диспрозий", mass:162.50, group:"lanthanide"},
+      {number:67, symbol:"Ho", name:"Гольмий", mass:164.93, group:"lanthanide"},
+      {number:68, symbol:"Er", name:"Эрбий", mass:167.26, group:"lanthanide"},
+      {number:69, symbol:"Tm", name:"Тулий", mass:168.93, group:"lanthanide"},
+      {number:70, symbol:"Yb", name:"Иттербий", mass:173.05, group:"lanthanide"},
+      {number:71, symbol:"Lu", name:"Лютеций", mass:174.97, group:"lanthanide"},
+      {number:72, symbol:"Hf", name:"Гафний", mass:178.49, group:"transition"},
+      {number:73, symbol:"Ta", name:"Тантал", mass:180.95, group:"transition"},
+      {number:74, symbol:"W", name:"Вольфрам", mass:183.84, group:"transition"},
+      {number:75, symbol:"Re", name:"Рений", mass:186.21, group:"transition"},
+      {number:76, symbol:"Os", name:"Осмий", mass:190.23, group:"transition"},
+      {number:77, symbol:"Ir", name:"Иридий", mass:192.22, group:"transition"},
+      {number:78, symbol:"Pt", name:"Платина", mass:195.08, group:"transition"},
+      {number:79, symbol:"Au", name:"Золото", mass:196.97, group:"transition"},
+      {number:80, symbol:"Hg", name:"Ртуть", mass:200.59, group:"transition"},
+      {number:81, symbol:"Tl", name:"Таллий", mass:204.38, group:"post-transition"},
+      {number:82, symbol:"Pb", name:"Свинец", mass:207.2, group:"post-transition"},
+      {number:83, symbol:"Bi", name:"Висмут", mass:208.98, group:"post-transition"},
+      {number:84, symbol:"Po", name:"Полоний", mass:209, group:"metalloid"},
+      {number:85, symbol:"At", name:"Астат", mass:210, group:"metalloid"},
+      {number:86, symbol:"Rn", name:"Радон", mass:222, group:"noble-gas"},
+      {number:87, symbol:"Fr", name:"Франций", mass:223, group:"alkali"},
+      {number:88, symbol:"Ra", name:"Радий", mass:226, group:"alkaline"},
+      {number:89, symbol:"Ac", name:"Актиний", mass:227, group:"actinide"},
+      {number:90, symbol:"Th", name:"Торий", mass:232.04, group:"actinide"},
+      {number:91, symbol:"Pa", name:"Протактиний", mass:231.04, group:"actinide"},
+      {number:92, symbol:"U", name:"Уран", mass:238.03, group:"actinide"},
+      {number:93, symbol:"Np", name:"Нептуний", mass:237, group:"actinide"},
+      {number:94, symbol:"Pu", name:"Плутоний", mass:244, group:"actinide"},
+      {number:95, symbol:"Am", name:"Америций", mass:243, group:"actinide"},
+      {number:96, symbol:"Cm", name:"Кюрий", mass:247, group:"actinide"},
+      {number:97, symbol:"Bk", name:"Берклий", mass:247, group:"actinide"},
+      {number:98, symbol:"Cf", name:"Калифорний", mass:251, group:"actinide"},
+      {number:99, symbol:"Es", name:"Эйнштейний", mass:252, group:"actinide"},
+      {number:100, symbol:"Fm", name:"Фермий", mass:257, group:"actinide"},
+      {number:101, symbol:"Md", name:"Менделевий", mass:258, group:"actinide"},
+      {number:102, symbol:"No", name:"Нобелий", mass:259, group:"actinide"},
+      {number:103, symbol:"Lr", name:"Лоуренсий", mass:266, group:"actinide"},
+      {number:104, symbol:"Rf", name:"Разерфордий", mass:267, group:"transition"},
+      {number:105, symbol:"Db", name:"Дубний", mass:268, group:"transition"},
+      {number:106, symbol:"Sg", name:"Сиборгий", mass:269, group:"transition"},
+      {number:107, symbol:"Bh", name:"Борий", mass:270, group:"transition"},
+      {number:108, symbol:"Hs", name:"Гассий", mass:277, group:"transition"},
+      {number:109, symbol:"Mt", name:"Мейтнерий", mass:276, group:"transition"},
+      {number:110, symbol:"Ds", name:"Дармштадтий", mass:281, group:"transition"},
+      {number:111, symbol:"Rg", name:"Рентгений", mass:280, group:"transition"},
+      {number:112, symbol:"Cn", name:"Коперниций", mass:285, group:"transition"},
+      {number:113, symbol:"Nh", name:"Нихоний", mass:286, group:"post-transition"},
+      {number:114, symbol:"Fl", name:"Флеровий", mass:289, group:"post-transition"},
+      {number:115, symbol:"Mc", name:"Московий", mass:290, group:"post-transition"},
+      {number:116, symbol:"Lv", name:"Ливерморий", mass:293, group:"post-transition"},
+      {number:117, symbol:"Ts", name:"Теннессин", mass:294, group:"halogen"},
+      {number:118, symbol:"Og", name:"Оганесон", mass:294, group:"noble-gas"}
+    ];
+
+    function getElementByNumber(num) {
+      return elements.find(el => el.number === num);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const table = document.getElementById('periodic-table');
+      const tooltip = document.getElementById('tooltip');
+
+      // Основная таблица (7 строк)
+      const rows = [
+        [1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 2],
+        [3, 4, null, null, null, null, null, null, null, null, null, null, 5, 6, 7, 8, 9, 10],
+        [11, 12, null, null, null, null, null, null, null, null, null, null, 13, 14, 15, 16, 17, 18],
+        [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
+        [37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54],
+        [55, 56, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86],
+        [87, 88, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118]
+      ];
+
+      rows.forEach(rowElements => {
+        const tr = document.createElement('tr');
+        rowElements.forEach(num => {
+          const td = document.createElement('td');
+          if (!num) {
+            td.innerHTML = '';
+          } else {
+            const el = getElementByNumber(num);
+            if (el) {
+              td.innerHTML = `
+                <button class="element ${el.group}" data-sound="${el.symbol}" title="${el.name}">
+                  <div class="number">${el.number}</div>
+                  <div class="symbol">${el.symbol}</div>
+                  <div class="name">${el.name}</div>
+                  <div class="mass-large">${el.mass.toFixed(3)}</div>
+                </button>
+              `;
+            }
+          }
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      });
+
+      // Подсказки
+      document.querySelectorAll('.element').forEach(btn => {
+        btn.addEventListener('mouseenter', e => {
+          tooltip.textContent = btn.title;
+          tooltip.classList.add('show');
+        });
+        btn.addEventListener('mousemove', e => {
+          tooltip.style.left = e.pageX + 10 + 'px';
+          tooltip.style.top = e.pageY + 10 + 'px';
+        });
+        btn.addEventListener('mouseleave', () => {
+          tooltip.classList.remove('show');
+        });
+      });
+
+      // Звуки
+      const sounds = {};
+      document.querySelectorAll('.element').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const symbol = btn.dataset.sound;
+          if (sounds[symbol] && !sounds[symbol].paused) {
+            sounds[symbol].pause();
+            sounds[symbol].currentTime = 0;
+            btn.classList.remove('playing');
+          } else {
+            const audio = new Audio(`sounds/${symbol}.mp3`);
+            sounds[symbol] = audio;
+            audio.play();
+            btn.classList.add('playing');
+          }
+        });
+      });
+    });
+
+    function toggleTheme() {
+      document.body.setAttribute('data-theme',
+        document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+      );
+    }
+  </script>
+</body>
+</html>

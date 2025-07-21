@@ -1,0 +1,176 @@
+:root {
+  --bg-color: #f8f8f8;
+  --text-color: #333;
+  --border-color: #aaa;
+  --card-bg: white;
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #eee;
+  --border-color: #444;
+  --card-bg: #1e1e1e;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  text-align: center;
+  padding: 10px;
+  margin: 0;
+  transition: background-color 0.3s;
+}
+
+h1 {
+  font-size: 1.5em;
+  margin: 10px 0;
+}
+
+.theme-toggle {
+  margin: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.table-container {
+  display: inline-block;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  background-color: var(--card-bg);
+}
+
+table {
+  border-collapse: collapse;
+  min-width: 800px;
+  margin: 0 auto;
+}
+
+td {
+  width: 70px;
+  height: 90px;
+  border: 1px solid var(--border-color);
+  padding: 2px;
+  position: relative;
+}
+
+.element {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.element:hover {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+/* Атомный номер — сверху слева */
+.number {
+  font-size: 9px;
+  opacity: 0.9;
+  align-self: flex-start;
+  margin-left: 2px;
+  font-weight: bold;
+}
+
+/* Символ — крупный, центральный */
+.symbol {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -4px;
+}
+
+/* Название — компактно под символом */
+.name {
+  font-size: 8px;
+  text-align: center;
+  opacity: 0.8;
+  margin: 0;
+  line-height: 1.2;
+  max-height: 1.4em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Масса — внизу справа */
+.mass {
+  font-size: 11px;        /* Крупнее, чем раньше */
+  font-weight: bold;
+  color: #333;
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Темная тема — адаптация цветов */
+[data-theme="dark"] .mass {
+  color: #ddd;
+}
+
+/* Цвета групп */
+.alkali       { background-color: #ffcccb; }
+.alkaline     { background-color: #ffe4b5; }
+.transition    { background-color: #add8e6; }
+.post-transition { background-color: #98fb98; }
+.metalloid     { background-color: #dda0dd; }
+.nonmetal      { background-color: #fffacd; }
+.noble-gas     { background-color: #e0ffff; }
+.lanthanide    { background-color: #f0e68c; }
+.actinide      { background-color: #cd5c5c; color: white; }
+
+/* Индикатор воспроизведения */
+.element.playing::after {
+  content: '🔊';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 10px;
+  color: yellow;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+
+/* Подсказка */
+.tooltip {
+  position: absolute;
+  background: var(--card-bg);
+  color: var(--text-color);
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tooltip.show {
+  opacity: 1;
+}
